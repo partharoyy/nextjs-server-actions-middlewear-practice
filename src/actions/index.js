@@ -70,7 +70,7 @@ export async function userSignInAction(userFormData) {
     }
 
     //check password is correct
-    const checkPassword = bcryptjs.compare(password, checkUser.password);
+    const checkPassword = await bcryptjs.compare(password, checkUser.password);
 
     if (!checkPassword) {
       return {
@@ -87,7 +87,7 @@ export async function userSignInAction(userFormData) {
     };
 
     //create token
-    const token = await jwt.sign(userToken, process.env.NEXT_PUBLIC_SECRET_KEY, { expiresIn: '1d' });
+    const token = jwt.sign(userToken, process.env.NEXT_PUBLIC_SECRET_KEY, { expiresIn: '1d' });
 
     //store token in cookies
     const getCookies = cookies();
@@ -145,4 +145,9 @@ export async function getUsersAction() {
       message: 'Something went wrong!',
     };
   }
+}
+
+export async function logoutAction() {
+  const getCookies = cookies();
+  getCookies.set('token', '');
 }
